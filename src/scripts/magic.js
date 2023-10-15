@@ -180,15 +180,7 @@ class Magic extends Entity {
     super.draw(level);
   }
 }
-/** @type {HTMLImageElement[]} */
-Magic.SPRITES = [];
-{
-  for (let i=0;i<8;++i) {
-    Magic.SPRITES.push(new Image());
-    Magic.SPRITES[i].src = "./src/sprites/magic_"+i+".png";
-  }
-  Object.freeze(Magic.SPRITES); //don't change this
-}
+
 
 // class MagicOrb extends Magic {
 //   static cost = 8;
@@ -208,15 +200,6 @@ class MagicPiercingOrb extends Magic {
   static iFrames = 8;
 
   static pierce = 1;
-}
-/** @type {HTMLImageElement[]} */
-MagicPiercingOrb.SPRITES = [];
-{
-  for (let i=0;i<8;++i) {
-    MagicPiercingOrb.SPRITES.push(new Image());
-    MagicPiercingOrb.SPRITES[i].src = "./src/sprites/magic_"+i+".png";
-  }
-  Object.freeze(MagicPiercingOrb.SPRITES); //don't change this
 }
 
 class MagicBigOrb extends Magic {
@@ -475,15 +458,7 @@ class MagicHealing extends Magic {
     }
   }
 }
-/** @type {HTMLImageElement[]} */
-MagicHealing.SPRITES = [];
-{
-  for (let i=0;i<8;++i) {
-    MagicHealing.SPRITES.push(new Image());
-    MagicHealing.SPRITES[i].src = "./src/sprites/magic_healing_"+i+".png";
-  }
-  Object.freeze(MagicHealing.SPRITES); //don't change this
-}
+
 
 class MagicHealPlus extends MagicHealing { //this is also based on MagicFollow but all functions are overriden
   //this spell's stats are complete garbage but it's nearly impossible to dodge.

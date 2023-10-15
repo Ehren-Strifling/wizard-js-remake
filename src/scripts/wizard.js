@@ -546,16 +546,7 @@ class Player extends Wizard {
   }
 }
 
-/** @type {HTMLImageElement[]} */
-Wizard.SPRITES = [];
-{Wizard.SPRITES
-  for (let i=0;i<8;++i) {
-    Wizard.SPRITES.push(new Image());
-    Wizard.SPRITES[i].src = "./src/sprites/wizard_"+i+".png";
-  }
-  Object.freeze(Wizard.SPRITES); //don't try editing this
-}
-//extremely strange how links are relative to the html file instead of the script file.
+
 
 
 
