@@ -62,3 +62,37 @@
     console.log("");
   });
 }
+
+/**
+ * 
+ * @param {number} id Give the wizard the spell with this id instead of giving a random spell.
+ * @returns {Magic}
+ */
+Player.getSpell = function (id) { //TEMP for debugging
+  if (!id && id!=0) {
+    id = parseInt(prompt("Please input spell id.", Math.floor(Math.random()*8)));
+  }
+  //id = id || prompt("Please input spell id."); //does not work because 0 is falsy
+  switch (id) {
+    case 0: default: return Magic;
+    case 1: return MagicPiercingOrb;
+    case 2: return MagicBigOrb;
+    case 3: return MagicBreath;
+    case 4: return MagicHoming;
+    case 5: return MagicFollow;
+    case 6: return MagicHealing;
+    case 7: return MagicHealPlus;
+  }
+}
+
+
+
+Player.prototype.control2 = Player.prototype.control;
+Player.prototype.control = function (level) {
+  this.control2(level);
+  for (let i=0;i<8;++i) {
+    if (level.getInput().key(96+i)) {
+      this.spell = this.constructor.getSpell(i);
+    }
+  }
+}

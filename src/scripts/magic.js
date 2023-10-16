@@ -192,7 +192,7 @@ class Magic extends Entity {
 // }
 
 class MagicPiercingOrb extends Magic {
-  static cost = 12;
+  static cost = 14;
   static cooldown = 9;
   static damage = 6;
   static knockback = 0;
@@ -415,7 +415,7 @@ MagicFollow.prototype.findTarget = MagicHoming.prototype.findTarget;
 
 class MagicHealing extends Magic {
   static cost = 12;
-  static cooldown = 6;
+  static cooldown = 8;
   static damage = 4;
   static knockback = 0;
   static speed = 4;
@@ -442,7 +442,7 @@ class MagicHealing extends Magic {
     if (wizard!=this.caster && this.pierce>=0) {  
       if (wizard.colour===this.colour) { //same colour wizard
         if ((this.constructor.healthHeal>0 && wizard.health<wizard.maxHealth) ||
-          (this.constructor.manaHeal>0 && wizard.magic<wizard.maxMagic)
+          (this.constructor.manaHeal>0 && wizard.mana<wizard.maxMana)
         ) {
           this.pierce--;
           wizard.heal(this.constructor.healthHeal);

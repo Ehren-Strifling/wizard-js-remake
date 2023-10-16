@@ -440,18 +440,19 @@ class Wizard extends Entity {
 
   /**
    * Gives a wizard a random spell
+   * @param {number} id Give the wizard the spell with this id instead of giving a random spell.
    * @returns {Magic.constructor}
    */
-  static getSpell() {
-    let r = Math.floor(Math.random()*8);
-    switch (r) {
+  static getSpell(id) {
+    id = id || Math.floor(Math.random()*8);
+    switch (id) {
       case 0: default: return Magic;
       case 1: return MagicPiercingOrb;
       case 2: return MagicBigOrb;
       case 3: return MagicBreath;
-      case 4: return MagicHealing;
-      case 5: return MagicHoming;
-      case 6: return MagicFollow;
+      case 4: return MagicHoming;
+      case 5: return MagicFollow;
+      case 6: return MagicHealing;
       case 7: return MagicHealPlus;
     }
   }
@@ -544,6 +545,8 @@ class Player extends Wizard {
     super.drawHealthbar(level);
     super.drawManabar(level);
   }
+
+
 }
 
 

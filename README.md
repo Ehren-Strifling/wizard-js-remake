@@ -21,3 +21,25 @@ Press the **X** key to set your auto-aim target to a wizard nearby your mouse. P
 _If your auto aim target is defeated then you will automatically target another nearby enemy wizard._
 
 Holding **shift** will override the auto-aim and resume aiming towards your mouse. Spells that track wizards will still prioritise your set target.
+
+### Debug controls
+Enter a number to the prompt to select which spell you want.
+You can also use the numberpad numbers to change your spell while the game is still running.
+
+#### Spell ids
+0. Basic magic. Rapid fire spell with a low mana cost
+1. Piercing magic. Slower firing smell that can pierce through 1 wizard to hit a second one
+2. Large orb magic. Shoots big projectiles that deal a lot of damage and cause knockback but fires slowely.
+3. Magic Breath. Short range magic that can deflect projectiles and has a high dps but high mana cost.
+4. Homing magic. Shoots magic that will home in on nearby targets. At the cost of dealing slightly less damage.
+5. Follow magic (name still not decided). Shoots magic that flies towards enemies. Has a high mana cost.
+6. Healing magic. Restores the health and mana of any allies it hits. But costs slightly more to cast.
+7. Homing healing magic. Will home in on enemies or allies. Slightly restores the health of allies. Has a pitiful damage output.
+
+## Mechanics
+### Mana
+Using spells costs mana to cast. Mana regenerates overtime.
+If a wizard has full mana and has not been hit for a while, they will start regenerating health using mana.
+### Colour
+Wizards with the same robe colour are **allies**. Wizards with different robe colour are **enemies**.
+Spells will not hit allies (unless they are healing spells).
