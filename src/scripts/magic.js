@@ -167,7 +167,7 @@ class Magic extends Entity {
     if (wizard.colour!=this.colour && this.pierce>=0) {
       if (wizard.damageTimer>=this.constructor.iFrames) {
         this.pierce--;
-        wizard.damage(this.constructor.damage);
+        wizard.damage(this.constructor.damage, this);
         wizard.movement.add(this.movement.vectorCopy().normalize().scale(this.constructor.knockback));
       }
     }
@@ -217,9 +217,9 @@ class MagicBigOrb extends Magic {
 class MagicBreath extends Magic {
   //this spell's stats are incredible, most likely the best spell in the game for 1v1.
   //But it can't do anything against groups.
-  static cost = 10;
+  static cost = 14;
   static cooldown = 3;
-  static damage = 6;
+  static damage = 10;
   static knockback = 1;
   static speed = 10;
   static iFrames = 3;
@@ -445,13 +445,13 @@ class MagicHealing extends Magic {
           (this.constructor.manaHeal>0 && wizard.mana<wizard.maxMana)
         ) {
           this.pierce--;
-          wizard.heal(this.constructor.healthHeal);
-          wizard.manaHeal(this.constructor.manaHeal);
+          wizard.heal(this.constructor.healthHeal, this);
+          wizard.manaHeal(this.constructor.manaHeal, this);
         }
       } else { //different colour wizard
         if (wizard.damageTimer>=this.constructor.iFrames) {
           this.pierce--;
-          wizard.damage(this.constructor.damage);
+          wizard.damage(this.constructor.damage, this);
           wizard.movement.add(this.movement.vectorCopy().normalize().scale(this.constructor.knockback));
         }
       }

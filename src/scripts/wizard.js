@@ -62,6 +62,9 @@ class Wizard extends Entity {
      * @type {boolean}
      */
     this.inWorld = false;
+
+    /**@type {Wizard} The wizard that defeated this wizard */
+    this.defeatedBy = null;
   }
 
   addToLevel(level) {
@@ -221,15 +224,23 @@ class Wizard extends Entity {
 
   /**
    * @param {number} amount
+   * @param {Magic} source
    */
-  damage(amount) {
+  damage(amount, source = null) {
     this.damageTimer = 0;
     this.health-=amount;
+
+    if (this.health<=0) {
+      //it is technically possible for an enemy to be defeated and the healed before the frame ends.
+      //This We want to reset defeatedBy to null if we can in these scenarios
+      this.defeatedBy = (source) ? source.caster : null;
+    }
   }
   /**
    * @param {number} amount
+   * @param {Magic} source
    */
-  heal(amount) {
+  heal(amount, source = null) {
     this.health+=amount;
     this.healTimer = 0;
     if (this.health>this.maxHealth) {
@@ -238,8 +249,9 @@ class Wizard extends Entity {
   }
   /**
    * @param {number} amount
+   * @param {Magic} source
    */
-  manaHeal(amount) {
+  manaHeal(amount, source = null) {
     this.mana+=amount;
     if (this.mana>this.maxMana) {
       this.mana = this.maxMana;

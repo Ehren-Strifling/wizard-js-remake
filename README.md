@@ -10,7 +10,7 @@ https://github.com/Ehren-Strifling/xander-js-3
 
 If you do not want to download it then you can try **wizard-js-portable.html** in the portable folder. It should work as long as you are online.
 
-The game is still early in development, there are no high scores yet nor any wizard respawning.
+The game is still early in development.
 
 ## Main Controls
 Use **WASD** or the **arrow keys** to move. Hold **spacebar** or **leftmouse** to cast magic.  

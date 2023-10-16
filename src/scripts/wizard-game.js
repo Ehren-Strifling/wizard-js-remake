@@ -23,16 +23,16 @@ class WizardGameLevel {
     */
     this.radius = 1600;
 
-    /** @type {Player} */
-    this.player = new Player(this, 0, 0);
+    // /** @type {Player} */
+    // this.player = new Player(this, 0, 0);
     /** @type {Wizard} */
-    this.cameraTarget = this.player;
-    this.addWizard(this.player);
+    this.cameraTarget = null;
+    // this.addWizard(this.player);
     //this.player.spell = MagicBreath; //testing
 
-    for (let i=0;i<32;++i) {
-      this.addWizard(new Enemy(this, Math.random()*this.radius-this.radius/2, Math.random()*this.radius-this.radius/2));
-    }
+    // for (let i=0;i<32;++i) {
+    //   this.addWizard(new Enemy(this, Math.random()*this.radius-this.radius/2, Math.random()*this.radius-this.radius/2));
+    // }
 
     //65,536 magic projectiles to test the grid.
     //Uses about a quarter of my cpu which is great since we won't be reaching anywhere close to 65,536 projectiles.
@@ -99,8 +99,7 @@ class WizardGameLevel {
       let returnval = this.wizards[i].after(this);
       switch (returnval) {
         case AFTER_CODE.DESTROY:
-          this.wizards[i].destroy(this);
-          this.wizards.splice(i,1);
+          this.destroyWizard(i);
           break;
         default:
       }
@@ -110,8 +109,7 @@ class WizardGameLevel {
       let returnval = this.magic[i].after(this);
       switch (returnval) {
         case AFTER_CODE.DESTROY:
-          this.magic[i].destroy(this);
-          this.magic.splice(i,1)[0].GridCell
+          this.destroyMagic(i);
           break;
         default:
       }
@@ -129,6 +127,14 @@ class WizardGameLevel {
     }
   }
 
+  destroyWizard(i) {
+    this.wizards[i].destroy(this);
+    this.wizards.splice(i,1);
+  }
+  destroyMagic(i) {
+    this.magic[i].destroy(this);
+    this.magic.splice(i,1); //[0].GridCell; //????? Was this an error
+  }
 
   /**
    * Renders the level
