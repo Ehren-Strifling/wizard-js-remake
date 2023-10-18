@@ -1,11 +1,16 @@
 "use strict"; //Wizard game setup file.
 //Should allow for multiple game instances on one page even though it isn't practical
+
+//framerate variables
 const FRAME_RATE = 1000/60;
 var fps = 0;
 var framesSinceLastSecond = 0;
 var nextSecond;
 
 var frameStart = 0;
+
+var nextFrame = Date.now();
+
 
 function WizardGameInstance(canvas) {
   /**@type {HTMLCanvasElement} */
@@ -25,12 +30,15 @@ function WizardGameInstance(canvas) {
 
   //apparently, Firefox is allowed to just add a 10ms delay between intervals which bumps the framerate down from 60 to 40.
   //Firefox also seems to take longer to take longer to process each frame. Not sure why.
-  if (navigator.userAgent.indexOf("Firefox") > -1) {
-    setInterval((e)=>{this.main(e)}, FRAME_RATE-10);
-  } else {
-    //we need to create a new function here for some reason... Otherwise it executes main with the Window as "this".
-    setInterval((e)=>{this.main(e)}, FRAME_RATE);
-  }
+  // if (navigator.userAgent.indexOf("Firefox") > -1) {
+  //   setInterval((e)=>{this.main(e)}, FRAME_RATE-10);
+  // } else {
+  //   //we need to create a new function here for some reason... Otherwise it executes main with the Window as "this".
+  //   setInterval((e)=>{this.main(e)}, FRAME_RATE);
+  // }
+
+  //Nevermind, it turns out that firefox changes the interval time based on lag which is incredibly annoying
+  //etInterval((e)=>{this.main(e)}, FRAME_RATE);
 }
 
 WizardGameInstance.prototype.startup = function() {
@@ -39,36 +47,49 @@ WizardGameInstance.prototype.startup = function() {
   this.canvas.width = 600;
   this.canvas.height = 400;
 
-  //TEMP
+  
   this.level = new EndlessLevel(this);
   this.level.camera.setWidth(this.canvas.width);
   this.level.camera.setHeight(this.canvas.height);
 
   nextSecond = Date.now()+1000;
+
+  nextFrame = Date.now()+FRAME_RATE;
+  this.main();
 };
-WizardGameInstance.prototype.main = function(e) {
-  if (this.input.key(27)===Input.PRESSED) {
-    this.paused = !this.paused;
-  }
-  //frameStart = Date.now();
-  if (this.level!=null) {
-    if (!this.paused) {
-      this.level.act(); 
-      this.level.draw();
-      this.drawFrameRate();
-    } else {
-      this.level.draw();
-      this.drawFrameRate();
+WizardGameInstance.prototype.main = async function() {
+  while (true) {
+    let loops = 0;
+    while(Date.now()>nextFrame && loops++<10) {
+      if (this.level!=null) {
+        if (this.input.key(27)===Input.PRESSED) {
+          this.paused = !this.paused;
+        }
+
+        if (!this.paused) {
+          this.level.act(); 
+        }
+        this.input.reset();
+      } 
+      framesSinceLastSecond++;
+      nextFrame+=FRAME_RATE;
+    }
+    if (loops>=10) {
+      nextFrame = Date.now() + FRAME_RATE;
+    }
+    this.level.draw();
+    this.drawFrameRate();
+    if (this.paused) {
       this.drawPauseScreen();
-    }  
+    }
+
     
-  }
-  //console.log("FrameTime: " + (Date.now()-frameStart));
-  framesSinceLastSecond++;
-  if (Date.now()>=nextSecond) {
-    fps = framesSinceLastSecond;
-    framesSinceLastSecond = 0;
-    nextSecond+=1000;
+    if (Date.now()>=nextSecond) {
+      fps = framesSinceLastSecond;
+      framesSinceLastSecond = 0;
+      nextSecond+=1000;
+    }
+    await sleep(nextFrame-Date.now());
   }
 };
 WizardGameInstance.prototype.drawPauseScreen = function () {
@@ -96,4 +117,8 @@ function onLoad(e) {
     new WizardGameInstance(canvases.item(i));
   }
   window.removeEventListener("load", onLoad);
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }

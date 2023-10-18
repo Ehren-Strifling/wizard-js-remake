@@ -1,7 +1,7 @@
 "use strict";
 //Ehren Strifling
 
-class EndlessLevel extends WizardGameLevel {
+class EndlessLevel extends GridCollisionLevel {
   static SPAWN_COOLDOWN = 120;
   static MIN_SPAWN_DISTANCE = 360; //how close an enemy can spawn to a player
   static RADIUS = 1600;
@@ -22,7 +22,7 @@ class EndlessLevel extends WizardGameLevel {
     */
     this.radius = this.constructor.RADIUS;
     //Grid cell size = width / cell count. MAKE SURE THE CELLS ARE NOT TOO TINY.
-    this.grid = new Grid(32,32,this.constructor.RADIUS, this.constructor.RADIUS);
+    this.grid = new Grid(128,128,this.constructor.RADIUS*2, this.constructor.RADIUS*2);
 
     //new properties
     /**@type {number} game time */
@@ -86,9 +86,8 @@ class EndlessLevel extends WizardGameLevel {
 
       w.heal(this.constructor.HEAL_PER_KO);
       w.manaHeal(this.constructor.MANA_PER_KO);
-
     }
-
+    //TEMP: There is an AFTERCODE.PLAYER_DEFEAT that could and should be used for this instead.
     if (this.wizards[i]===this.player) {
       this.gameover = true;
     }
@@ -120,39 +119,40 @@ class EndlessLevel extends WizardGameLevel {
   }
 
   drawBackground() {
-    this.getContext().fillStyle = "#000000";
-    this.getContext().fillRect(0, 0, this.instance.canvas.width, this.instance.canvas.height);
+    let ctx = this.getContext();
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0, 0, this.getCanvas().width, this.getCanvas().height);
 
-    this.getContext().lineWidth = 5;
-    this.getContext().strokeStyle = "#000000";
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = "#000000";
 
-    this.getContext().fillStyle = "#606060";
-    this.getContext().beginPath();
-    this.camera.circle(this.getContext(), 0, 0, this.radius);
-    this.getContext().fill();
-    this.getContext().stroke();
+    ctx.fillStyle = "#606060";
+    ctx.beginPath();
+    this.camera.circle(ctx, 0, 0, this.radius);
+    ctx.fill();
+    ctx.stroke();
 
-    this.getContext().fillStyle = "#808080";
-    this.getContext().beginPath();
-    this.camera.circle(this.getContext(), 0, 0, this.radius * 3/4);
-    this.getContext().fill();
-    this.getContext().stroke();
+    ctx.fillStyle = "#808080";
+    ctx.beginPath();
+    this.camera.circle(ctx, 0, 0, this.radius * 3/4);
+    ctx.fill();
+    ctx.stroke();
     
-    this.getContext().fillStyle = "#A0A0A0";
-    this.getContext().beginPath();
-    this.camera.circle(this.getContext(), 0, 0, this.radius * 1/2);
-    this.getContext().fill();
-    this.getContext().stroke();
+    ctx.fillStyle = "#A0A0A0";
+    ctx.beginPath();
+    this.camera.circle(ctx, 0, 0, this.radius * 1/2);
+    ctx.fill();
+    ctx.stroke();
 
-    this.getContext().fillStyle = "#C0C0C0";
-    this.getContext().beginPath();
-    this.camera.circle(this.getContext(), 0, 0, this.radius * 1/4);
-    this.getContext().fill();
-    this.getContext().stroke();
+    ctx.fillStyle = "#C0C0C0";
+    ctx.beginPath();
+    this.camera.circle(ctx, 0, 0, this.radius * 1/4);
+    ctx.fill();
+    ctx.stroke();
     
-    this.getContext().beginPath();
-    this.getContext().fillStyle = "#000000";
-    this.camera.circle(this.getContext(), 0, 0, 5);
-    this.getContext().fill();
+    ctx.beginPath();
+    ctx.fillStyle = "#000000";
+    this.camera.circle(ctx, 0, 0, 5);
+    ctx.fill();
   }
 }

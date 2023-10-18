@@ -68,14 +68,12 @@ class Wizard extends Entity {
   }
 
   addToLevel(level) {
-    this.updateGridPos(level);
     this.inWorld = true;
   }
   /**
    * @param {WizardGameLevel} level 
    */
   destroy(level) {
-    level.grid.removeWizard(this, this.gridCell);
     this.inWorld = false;
   }
 
@@ -123,19 +121,7 @@ class Wizard extends Entity {
       this.mana = this.maxMana;
     }
   }
-  /**
-   * @param {WizardGameLevel} level 
-   */
-  updateGridPos(level) { //I would really love to have entities have no reference to the grid...
-    let c = level.grid.getCell(this.x,this.y);
-    if (this.gridCell!=c) {
-      if (this.gridCell!=undefined) {
-        level.grid.removeWizard(this, this.gridCell);
-      }
-        level.grid.addWizard(this, c);
-        this.gridCell = c;
-    }
-  }
+  
   /**
    * @param {WizardGameLevel} level 
    */
@@ -177,7 +163,6 @@ class Wizard extends Entity {
     this.movement.add(this.acceleration);
     if (this.movement.x!=0||this.movement.y!=0) {
       this.add(this.movement);
-      this.updateGridPos(level);
     }
     //drag removes a percentage of our speed every frame.
     this.movement.scale(1-this.drag);
@@ -215,7 +200,7 @@ class Wizard extends Entity {
     //TEMP. Needs proper spellcasting class
     if (this.cooldown <=0 && this.shooting && this.mana>=this.spell.cost) {
       let magic = new this.spell(level, this);
-      magic.addToLevel(level);
+      level.addMagic(magic);
       this.mana-=magic.constructor.cost;
       this.cooldown = magic.constructor.cooldown;
     }
@@ -502,10 +487,10 @@ class Player extends Wizard {
     if (level.getInput().key(88)===Input.PRESSED || level.getInput().mouseClicked[0]===Input.PRESSED) {
       if (level.getInput().mouseX && level.getInput().mouseY) {
         let v = new Vector2(
-          level.camera.PtWX(level.getInput().mouseX*level.instance.canvas.width/level.instance.canvas.offsetWidth),
-          level.camera.PtWY(level.getInput().mouseY*level.instance.canvas.height/level.instance.canvas.offsetHeight)
+          level.camera.PtWX(level.getInput().mouseX*level.getCanvas().width/level.getCanvas().offsetWidth),
+          level.camera.PtWY(level.getInput().mouseY*level.getCanvas().height/level.getCanvas().offsetHeight)
         );
-        this.target = level.getNearestWizard(v,64,this);
+        this.target = level.getNearestWizard(v,256,this);
       }
       
     }
@@ -520,8 +505,8 @@ class Player extends Wizard {
       //Face towards the mouse.
       if (level.getInput().mouseX && level.getInput().mouseY) {
         let v = new Vector2(
-          level.camera.PtWX(level.getInput().mouseX*level.instance.canvas.width/level.instance.canvas.offsetWidth),
-          level.camera.PtWY(level.getInput().mouseY*level.instance.canvas.height/level.instance.canvas.offsetHeight)
+          level.camera.PtWX(level.getInput().mouseX*level.getCanvas().width/level.getCanvas().offsetWidth),
+          level.camera.PtWY(level.getInput().mouseY*level.getCanvas().height/level.getCanvas().offsetHeight)
         ).subtract(this);
         if (v.x||v.y) {
           this.rotation = v.getAngle();

@@ -100,14 +100,13 @@ class Magic extends Entity {
    * @param {WizardGameLevel} level 
    */
   addToLevel(level) {
-    level.magic.push(this);
-    this.updateGridPos(level);
+
   }
   /**
    * @param {WizardGameLevel} level 
    */
   destroy(level) {
-    level.grid.removeMagic(this, this.gridCell);
+    
   }
 
     /**
@@ -125,7 +124,6 @@ class Magic extends Entity {
   act(level) {
     this.lifeSpan--;
     this.move(level);
-    this.updateGridPos(level);
   }
   /**
    * @param {WizardGameLevel} level
@@ -136,19 +134,6 @@ class Magic extends Entity {
     if (this.sqDistance(new Vector2(0,0))>level.radius*level.radius) {
       
       this.pierce = -1;
-    }
-  }
-  /**
-   * @param {WizardGameLevel} level 
-   */
-  updateGridPos(level) {
-    let c = level.grid.getCell(this.x,this.y);
-    if (this.gridCell!=c) {
-      if (this.gridCell!=undefined) {
-        level.grid.removeMagic(this, this.gridCell);
-      }
-      level.grid.addMagic(this, c);
-      this.gridCell = c;
     }
   }
   /**

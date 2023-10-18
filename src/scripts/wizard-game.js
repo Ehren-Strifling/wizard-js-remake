@@ -1,5 +1,6 @@
 "use strict";
 
+//Base class with basic collision. Not optimized enough for everything I want. Use the GridCollisionLevel subclass.
 class WizardGameLevel {
   constructor(instance) {
     /**@type {WizardGameInstance} */
@@ -12,10 +13,6 @@ class WizardGameLevel {
     this.wizards = [];
     /**@type {Magic[]} */
     this.magic = [];
-
-    //Grid cell size = width / cell count. MAKE SURE THE CELLS ARE NOT TOO TINY.
-    /**@type {Grid} */
-    this.grid = new Grid(32,32,1600,1600);
     
     
     /** level area. Magic outside this area is destroyed. Wizards outside this area are bounced back in.
@@ -29,17 +26,6 @@ class WizardGameLevel {
     this.cameraTarget = null;
     // this.addWizard(this.player);
     //this.player.spell = MagicBreath; //testing
-
-    // for (let i=0;i<32;++i) {
-    //   this.addWizard(new Enemy(this, Math.random()*this.radius-this.radius/2, Math.random()*this.radius-this.radius/2));
-    // }
-
-    //65,536 magic projectiles to test the grid.
-    //Uses about a quarter of my cpu which is great since we won't be reaching anywhere close to 65,536 projectiles.
-
-    // for(let i=0;i<16**4;++i) {
-    // this.magic.push(new Magic(this, Math.random()*10000-5000,Math.random()*10000-5000));
-    // }
   }
 
   /**
@@ -56,6 +42,13 @@ class WizardGameLevel {
   getContext() {
     return this.instance.context2d;
   }
+  /**
+   * Minimizes the damage done if I ever have to change the instance structure
+   * @returns {HTMLCanvasElement}
+   */
+  getCanvas() {
+    return this.instance.canvas;
+  }
 
   /**
    * Adds a wizard to this level
@@ -65,19 +58,36 @@ class WizardGameLevel {
     this.wizards.push(wizard);
     wizard.addToLevel(this);
   }
+  addMagic(magic) {
+    this.magic.push(magic);
+    magic.addToLevel(this);
+  }
+  destroyWizard(i) {
+    this.wizards[i].destroy(this);
+    this.wizards.splice(i,1);
+  }
+  destroyMagic(i) {
+    this.magic[i].destroy(this);
+    this.magic.splice(i,1); //[0].GridCell; //????? Was this an error
+  }
   /**
    * Main loop called every frame
    */
   act() {
     for (let i=0;i<this.wizards.length;++i) {
-      this.wizards[i].act(this);
+      this.actWizards(i);
     }
     for (let i=0;i<this.magic.length;++i) {
-      this.magic[i].act(this);
+      this.actMagic(i);
     }
     this.collision();
     this.after();
-
+  }
+  actWizards(i) {
+    this.wizards[i].act(this);
+  }
+  actMagic(i) {
+    this.magic[i].act(this);
   }
   /**
    * Checks entity collisions
@@ -98,46 +108,36 @@ class WizardGameLevel {
     for (let i=this.wizards.length-1;i>=0;--i) {
       let returnval = this.wizards[i].after(this);
       switch (returnval) {
+        case AFTER_CODE.PLAYER_DEFEAT:
         case AFTER_CODE.DESTROY:
           this.destroyWizard(i);
           break;
-          default:
-          }
-        }
+        default:
+      }
+    }
         
-        for (let i=this.magic.length-1;i>=0;--i) {
-          let returnval = this.magic[i].after(this);
-          switch (returnval) {
-            case AFTER_CODE.DESTROY:
-              this.destroyMagic(i);
-              break;
-              default:
-              }
-            }
-            
-            if (this.player && !this.player.inWorld) {
-              this.player = null;
-            }
-            if (this.cameraTarget && !this.cameraTarget.inWorld) {
-              if (this.wizards.length>0) {
-                this.cameraTarget = this.wizards[0];
-              } else {
-                this.cameraTarget = null;
-              }
+    for (let i=this.magic.length-1;i>=0;--i) {
+      let returnval = this.magic[i].after(this);
+      switch (returnval) {
+        case AFTER_CODE.DESTROY:
+          this.destroyMagic(i);
+          break;
+        default:
+      }
+    }
+          
+    if (this.player && !this.player.inWorld) {
+      this.player = null;
+    }
+    if (this.cameraTarget && !this.cameraTarget.inWorld) {
+      if (this.wizards.length>0) {
+        this.cameraTarget = this.wizards[0];
+      } else {
+        this.cameraTarget = null;
+      }
     }
   }
-  
-  destroyWizard(i) {
-    this.wizards[i].destroy(this);
-    this.wizards.splice(i,1);
-  }
-  destroyMagic(i) {
-    this.magic[i].destroy(this);
-    this.magic.splice(i,1); //[0].GridCell; //????? Was this an error
-  }
-  
-  //These next 2 functions are a way for entities to get collision info.
-  //I eventually want to make entities have no reference to the grid and this helps with that.
+
   /**
    * 
    * @param {Vector2} vector 
@@ -145,7 +145,13 @@ class WizardGameLevel {
    * @returns {Wizard[]}
    */
   getWizardsInRadius(vector,radius) {
-    return this.grid.getWizardsInRadius(vector, radius);
+    let wizards = [];
+    for (let i=0;i<this.wizards.length;++i) {
+      if (vector.sqDistance(this.wizards[i])<((this.wizards[i]+radius) * (this.wizards[i]+radius))) {
+        wizards.push(this.wizards[i]);
+      }
+    }
+    return wizards;
   }
   /**
    * 
@@ -154,7 +160,13 @@ class WizardGameLevel {
    * @returns {Magic[]}
    */
   getMagicInRadius(vector,radius) {
-    return this.grid.getMagicInRadius(vector, radius);
+    let magic = [];
+    for (let i=0;i<this.magic.length;++i) {
+      if (vector.sqDistance(this.magic[i])<((this.magic[i].radius) * (this.magic[i].radius))) {
+        magic.push(this.magic[i]);
+      }
+    }
+    return magic;
   }
 
   //shortcut methods
@@ -219,41 +231,59 @@ class WizardGameLevel {
     this.drawBackground();
 
     //draw magic before wizards
-    this.grid.drawMagicIn(
-      this,
-      this.camera.PtWX(0),
-      this.camera.PtWY(0),
-      this.camera.PtWX(this.instance.canvas.width),
-      this.camera.PtWY(this.instance.canvas.height)
-    );
-    this.grid.drawWizardsIn(
-      this,
-      this.camera.PtWX(0),
-      this.camera.PtWY(0),
-      this.camera.PtWX(this.instance.canvas.width),
-      this.camera.PtWY(this.instance.canvas.height)
-    );
-
-    // if (this.player) {
-    //   this.player.drawHealthbar(this);
-    // }
-    this.grid.drawWizardsIn(
-      this,
-      this.camera.PtWX(0),
-      this.camera.PtWY(0),
-      this.camera.PtWX(this.instance.canvas.width),
-      this.camera.PtWY(this.instance.canvas.height),
-      "drawHealthbar"
-    );
-
-    this.getInput().reset();
+    this.drawMagic();
+    this.drawWizards();
   }
 
   drawBackground() {
-    this.getContext().lineWidth = 5;
-    this.getContext().strokeStyle = "#000000";
-    this.getContext().beginPath();
-    this.camera.circle(this.getContext(), 0, 0, this.radius);
-    this.getContext().stroke();
+    let ctx = this.getContext();
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = "#000000";
+    ctx.beginPath();
+    this.camera.circle(ctx, 0, 0, this.radius);
+    ctx.stroke();
+  }
+
+  drawWizards() {
+    let minX = this.camera.PtWX(0);
+    let maxX = this.camera.PtWX(this.getCanvas().width);
+    let minY = this.camera.PtWY(0);
+    let maxY = this.camera.PtWY(this.getCanvas().height);
+    for (let i=0;i<this.wizards.length;++i) {
+      if (
+        this.wizards[i].x+this.wizards[i].drawRadius > minX &&
+        this.wizards[i].x-this.wizards[i].drawRadius < maxX &&
+        this.wizards[i].y+this.wizards[i].drawRadius > minY &&
+        this.wizards[i].y-this.wizards[i].drawRadius < maxY
+      ) {
+        this.wizards[i].draw(this);
+      }
+    }
+    for (let i=0;i<this.wizards.length;++i) {
+      if (
+        this.wizards[i].x+this.wizards[i].drawRadius > minX &&
+        this.wizards[i].x-this.wizards[i].drawRadius < maxX &&
+        this.wizards[i].y+this.wizards[i].drawRadius > minY &&
+        this.wizards[i].y-this.wizards[i].drawRadius < maxY
+      ) {
+        this.wizards[i].drawHealthbar(this);
+      }
+    }
+  }
+  drawMagic() {
+    let minX = this.camera.PtWX(0);
+    let maxX = this.camera.PtWX(this.getCanvas().width);
+    let minY = this.camera.PtWY(0);
+    let maxY = this.camera.PtWY(this.getCanvas().height);
+    for (let i=0;i<this.magic.length;++i) {
+      if (
+        this.magic[i].x+this.magic[i].radius > minX &&
+        this.magic[i].x-this.magic[i].radius < maxX &&
+        this.magic[i].y+this.magic[i].radius > minY &&
+        this.magic[i].y-this.magic[i].radius < maxY
+      ) {
+        this.magic[i].draw(this);
+      }
+    }
   }
 }

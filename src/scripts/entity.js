@@ -49,9 +49,6 @@ class Entity extends Vector2 {
     /** Radius of this entities hitbox
      * @type {number} */
     this.radius = radius;
-    /** This entity's location in the grid
-     * @type {number} */
-    this.gridCell = undefined;
     /** This entity's rotation (in radians)
      * @type {number} */
     this.rotation = 0;
@@ -78,7 +75,7 @@ class Entity extends Vector2 {
   after(level) { return AFTER_CODE.NORMAL; }
   draw(level) {
     level.camera.drawRotatedImage(
-      level.instance.context2d,
+      level.getContext(),
       this.sprite,
       this.x,
       this.y,
