@@ -54,6 +54,9 @@ class Magic extends Entity {
    * @type {number}
    */
   static lifeSpan = 900;
+
+/** @type {string} name if this spell using in display and writing */
+  static name = "Fireball"; //extremely creative name
   /**
    * 
    * @param {WizardGameLevel} level 
@@ -200,6 +203,8 @@ class MagicPiercingOrb extends Magic {
   static iFrames = 8;
 
   static pierce = 1;
+
+  static name = "Piercing Fireball";
 }
 
 class MagicBigOrb extends Magic {
@@ -212,6 +217,8 @@ class MagicBigOrb extends Magic {
 
   static pierce = 3;
   static radius = 24;
+
+  static name = "Meteor";
 }
 
 class MagicBreath extends Magic {
@@ -227,6 +234,8 @@ class MagicBreath extends Magic {
   static pierce = 2;
   static radius = 16;
   static lifeSpan = 32;
+
+  static name = "Dragon Breath";
 
   /**
    * 
@@ -269,6 +278,7 @@ class MagicHoming extends Magic { //base class for homing magic
    * @type {number} */
   static homingSpeed = Math.PI/64;
 
+  static name = "Magic Missile";
   /**
    * 
    * @param {WizardGameLevel} level 
@@ -361,9 +371,9 @@ class MagicHoming extends Magic { //base class for homing magic
 }
 
 class MagicFollow extends Magic {
-  static cost = 20;
+  static cost = 16;
   static cooldown = 7;
-  static damage = 4;
+  static damage = 6;
   static knockback = 0;
   static speed = 2;
   static iFrames = 8;
@@ -375,6 +385,8 @@ class MagicFollow extends Magic {
   static targetRadius = 512;
   static acceleration = 0.1;
   static maxSpeed = 8;
+
+  static name = "Dragon Spirit";
 
   /**
    * 
@@ -398,6 +410,8 @@ class MagicFollow extends Magic {
         this.target = null;
       } else {
         this.movement.add(this.target.vectorCopy().subtract(this).normalize().scale(this.constructor.acceleration));
+
+        
         if (this.movement.magnitude()>this.constructor.maxSpeed) {
           this.movement.normalize().scale(this.constructor.maxSpeed);
         }
@@ -430,6 +444,8 @@ class MagicHealing extends Magic {
    /** Mana restored when a friendly wizard is hit by this spell
    * @type {number} */
   static manaHeal = 8;
+
+  static name = "Restore";
 
   constructor(level, wizard) {
     super(level,wizard);
@@ -476,6 +492,8 @@ class MagicHealPlus extends MagicHealing { //this is also based on MagicFollow b
   static targetRadius = 512;
   static acceleration = 0.5;
   static maxSpeed = 6;
+
+  static name = "Heal Plus";
 
 
   /** Damage healed when a friendly wizard is hit by this spell

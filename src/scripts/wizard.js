@@ -327,17 +327,6 @@ class Wizard extends Entity {
       this.rotation = v.getAngle();
     }
 
-    //now we need to find an angle that hits the target when they continue moving.
-    // let magicSpeed = this.spell.speed;
-    // let targetSpeed = this.target.movement.magnitude();
-    // let targetDist = v.magnitude();
-
-    //let time;
-    // time = targetDist*targetDist / ((magicSpeed + targetSpeed)*(magicSpeed + targetSpeed)) / 2;
-    // console.log(time);
-    // time = (targetDist+targetSpeed) / magicSpeed;
-    // console.log(time);
-
     //so far this is the best formula I've got. I need to find the proper formula for this
     //BUT NOT ANYMORE. I have something slightly better now
     // time = this.distance(this.target);
@@ -346,15 +335,8 @@ class Wizard extends Entity {
     let time = this.distance(this.target) / this.spell.speed;
     let time2 = this.distance(this.target.vectorCopy().add(this.target.movement.vectorCopy().scale(time))) - this.distance(this.target);
     time += time2*3/4 / this.spell.speed;
-    //console.log(time);
 
-    //the new formula doesn't break when the target is approaching so I don't need to check for this.
-
-    //Some spells are actually harder to dodge with the old formula. Maybe different attacks should get different formulas
-
-    //if (v.copy().add(this.target.movement).sqMagnitude()>v.sqMagnitude()) {
     v = this.target.vectorCopy().add(this.target.movement.vectorCopy().scale(time)).subtract(this);
-    //}
     if (v.x||v.y) {
       this.shootingAngle = v.getAngle();
     }
