@@ -106,8 +106,8 @@ WizardGameInstance.prototype.drawPauseScreen = function () {
 WizardGameInstance.prototype.drawFrameRate = function () {
   this.context2d.fillStyle = "#000000";
   this.context2d.textAlign = "right";
-  this.context2d.font = "8px sans-serif"
-  this.context2d.fillText("Frame Rate: " + fps,this.canvas.width,this.canvas.height);
+  this.context2d.font = "8px sans-serif";
+  this.context2d.fillText("Frame Rate: " + fps, this.canvas.width-2, this.canvas.height-2);
 };
 
 window.addEventListener("load", onLoad); 

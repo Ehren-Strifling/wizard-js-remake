@@ -173,12 +173,12 @@ class Wizard extends Entity {
     }*/
 
     if (this.sqDistance(new Vector2(0,0))>level.radius*level.radius) {
-      let v = this.copy();
       this.normalize().scale(level.radius);
-      v.subtract(this).invert().scale(4);
+      let m = this.vectorCopy().add(this.movement).magnitude() - level.radius;
+      m*=2;
       //we use Math.ceil here to avoid giving the player 0 damage. This way there can't be an infinite invincibility exploit.
-      this.damage(Math.ceil(v.magnitude()));
-      this.movement.setVector(v);
+      this.damage(Math.ceil(m*2));
+      this.movement.setVector(this.vectorCopy().invert().normalize().scale(m));
     }
   }
 

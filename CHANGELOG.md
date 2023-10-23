@@ -4,9 +4,14 @@
 increased target radius for player's auto-aim
 Fixed how the framerate works, now it works flawlessly on (hopefully) all browser.
 
+
 ## Code Changes
 Removed all references to the level grid from entities, now it's all managed by the level itself.
 Created a new baseclass for level that doesn't use grid collision so I can compare performances. - The collision grid does in fact save A TON of performance.
+
+
+Reworked the barrier bouncing code to make it more consistent
+Moved the framerate counter slightly away from the edge of the canvas
 
 # Version 1.1-alpha
 
