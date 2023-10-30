@@ -167,11 +167,6 @@ class Wizard extends Entity {
     //drag removes a percentage of our speed every frame.
     this.movement.scale(1-this.drag);
 
-    //Garbage and not needed anymore since I fixed the core issue.
-    /*if (this.movement.sqMagnitude()<this.movespeed*this.drag) {
-      this.movement.zero();
-    }*/
-
     if (this.sqDistance(new Vector2(0,0))>level.radius*level.radius) {
       this.normalize().scale(level.radius);
       let m = this.vectorCopy().add(this.movement).magnitude() - level.radius;

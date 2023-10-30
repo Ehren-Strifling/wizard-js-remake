@@ -132,7 +132,6 @@ class Magic extends Entity {
     this.add(this.movement);
 
     if (this.sqDistance(new Vector2(0,0))>level.radius*level.radius) {
-      
       this.pierce = -1;
     }
   }
