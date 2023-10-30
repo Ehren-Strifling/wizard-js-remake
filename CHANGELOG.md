@@ -3,15 +3,17 @@
 ## Gameplay Changes
 increased target radius for player's auto-aim
 Fixed how the framerate works, now it works flawlessly on (hopefully) all browser.
+Now only reads keyboard inputs while the game canvas is focused.
 
+Changed how barrier bouncing code to make it more consistent
+Moved the framerate counter slightly away from the edge of the canvas
 
 ## Code Changes
 Removed all references to the level grid from entities, now it's all managed by the level itself.
 Created a new baseclass for level that doesn't use grid collision so I can compare performances. - The collision grid does in fact save A TON of performance.
 
-
-Reworked the barrier bouncing code to make it more consistent
-Moved the framerate counter slightly away from the edge of the canvas
+Updated xander-js-3
+Reworked code to use game-instance from xander-js-3
 
 # Version 1.1-alpha
 
