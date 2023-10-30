@@ -15,6 +15,8 @@ class MagicNew extends Magic {
   static pierce = 0;
   static radius = 12;
   static lifeSpan = 900;
+
+  static name = "";
 } */
 
 /**  Base class for all magic. 
@@ -147,10 +149,10 @@ class Magic extends Entity {
   }
 
   /**
-   * 
+   * @param {WizardGameLevel} level
    * @param {Wizard} wizard 
    */
-  hitWizard(wizard) {
+  hitWizard(level, wizard) {
     if (wizard.colour!=this.colour && this.pierce>=0) {
       if (wizard.damageTimer>=this.constructor.iFrames) {
         this.pierce--;
@@ -437,7 +439,11 @@ class MagicHealing extends Magic {
     this.target = wizard.target || null;
   }
 
-  hitWizard(wizard) {
+  /**
+   * @param {WizardGameLevel} level
+   * @param {Wizard} wizard 
+   */
+  hitWizard(level, wizard) {
     
     if (wizard!=this.caster && this.pierce>=0) {  
       if (wizard.colour===this.colour) { //same colour wizard
@@ -513,6 +519,112 @@ class MagicHealPlus extends MagicHealing { //this is also based on MagicFollow b
     this.target = Wizard.nearestFriendlyWizard(wizards,this,this.colour,this.caster);
     if (!this.target) { //There were no nearby friendly wizards.
       this.target = Wizard.nearestEnemyWizard(wizards, this, this.colour);
+    }
+  }
+}
+
+class MagicLifeSteal extends MagicHoming {
+  static cost = 12;
+  static cooldown = 6;
+  static damage = 3;
+  static knockback = 0;
+  static speed = 8;
+  static iFrames = 4;
+
+  static name = "Vampire";
+
+  static radius = 10;
+  static lifeSpan = 120;
+
+  static targetRadius = 128;
+  static homingSpeed = Math.PI/64;
+
+  /**
+   * @param {WizardGameLevel} level
+   * @param {Wizard} wizard 
+   */
+  hitWizard(level, wizard) {
+    if (wizard.colour!=this.colour && this.pierce>=0) {
+      if (wizard.damageTimer>=this.constructor.iFrames) {
+        this.pierce--;
+        wizard.damage(this.constructor.damage, this);
+        wizard.movement.add(this.movement.vectorCopy().normalize().scale(this.constructor.knockback));
+
+        let healSpirit = new MagicHealSpirit(level, this.caster);
+        healSpirit.setVector(this);
+        healSpirit.movement.setVector(this.movement);
+        level.addMagic(healSpirit);
+      }
+    }
+  }
+}
+class MagicHealSpirit extends MagicHealing {
+  static cost = 12;
+  static cooldown = 6;
+  static damage = 0;
+  static knockback = 0;
+  static speed = 8;
+  static iFrames = 0;
+
+  static name = "Vampire Healing";
+
+  static radius = 12;
+  static lifeSpan = 300;
+
+  static targetRadius = 1024;
+  static acceleration = 0.5;
+  static maxSpeed = 8;
+
+  /** Damage healed when a friendly wizard is hit by this spell
+   * @type {number} */
+  static healthHeal = 1;
+   /** Mana restored when a friendly wizard is hit by this spell
+   * @type {number} */
+  static manaHeal = 4;
+
+  constructor(level, wizard) {
+    super(level,wizard); //an absolute pain needing to call this
+    this.target = wizard;
+  }
+  findTarget(level) {
+    let wizards = level.getWizardsInRadius(this, this.constructor.targetRadius);
+    this.target = Wizard.nearestFriendlyWizard(wizards,this,this.colour, 0);
+  }
+
+  move(level) {
+    if (!this.target) {
+      this.findTarget(level);
+    } else {
+      if (!this.target.inWorld || this.target.colour!==this.colour || 
+        (this.target.health>=this.target.maxHealth && this.target.mana>=this.target.maxMana)) {
+        this.target = null;
+      } else {
+        this.movement.add(this.target.vectorCopy().subtract(this).normalize().scale(this.constructor.acceleration));
+        if (this.movement.magnitude()>this.constructor.maxSpeed) {
+          this.movement.normalize().scale(this.constructor.maxSpeed);
+        }
+      }
+    }
+
+    this.rotation = this.movement.getAngle();
+    super.move(level);
+  }
+
+  /**
+   * @param {WizardGameLevel} level
+   * @param {Wizard} wizard 
+   */
+  hitWizard(level, wizard) {
+    if (this.pierce>=0) {  
+      if (wizard.colour===this.colour) { //same colour wizard
+        if ((this.constructor.healthHeal>0 && wizard.health<wizard.maxHealth) ||
+          (this.constructor.manaHeal>0 && wizard.mana<wizard.maxMana)
+        ) {
+          this.pierce--;
+          wizard.heal(this.constructor.healthHeal, this);
+          wizard.manaHeal(this.constructor.manaHeal, this);
+        }
+      }
     }
   }
 }

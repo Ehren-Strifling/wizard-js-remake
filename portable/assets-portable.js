@@ -36,3 +36,6 @@ MagicHealing.SPRITES = [];
   }
   Object.freeze(MagicHealing.SPRITES); //don't change this
 }
+
+MagicLifeSteal.SPRITES = MagicHealing.SPRITES;
+MagicHealSpirit.SPRITES = MagicHealing.SPRITES;

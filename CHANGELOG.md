@@ -1,3 +1,16 @@
+# Version 1.3-alpha
+
+## New features
+Added Vampire Spell. Steals life from hit enemies.
+
+## Gameplay Changes
+Changed DPS to DPF in the debug script
+
+## Removed
+Removed Heal Plus spell
+
+## Code Changes
+
 # Version 1.2-alpha
 
 ## Gameplay Changes
@@ -5,7 +18,7 @@ increased target radius for player's auto-aim
 Fixed how the framerate works, now it works flawlessly on (hopefully) all browser.
 Now only reads keyboard inputs while the game canvas is focused.
 
-Changed how barrier bouncing code to make it more consistent
+Changed the barrier bouncing code to make it more consistent
 Moved the framerate counter slightly away from the edge of the canvas
 
 ## Code Changes

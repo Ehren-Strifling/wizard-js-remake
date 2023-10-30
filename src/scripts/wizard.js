@@ -140,7 +140,7 @@ class Wizard extends Entity {
     }
     let collidingMagic = level.getMagicInRadius(this,this.radius);
     for (let i=0;i<collidingMagic.length;++i) {
-      collidingMagic[i].hitWizard(this);
+      collidingMagic[i].hitWizard(level, this);
     }
   }
   /**
@@ -427,7 +427,8 @@ class Wizard extends Entity {
       case 4: return MagicHoming;
       case 5: return MagicFollow;
       case 6: return MagicHealing;
-      case 7: return MagicHealPlus;
+      //case 7: return MagicHealPlus;
+      case 7: return MagicLifeSteal;
     }
   }
 }

@@ -13,26 +13,28 @@
     MagicHoming,
     MagicFollow,
     MagicHealing,
-    MagicHealPlus
+    //MagicHealPlus,
+    MagicLifeSteal
   ];
   /**@type {typeof MagicHealing[]} */
   let healingMagic = [
     MagicHealing,
-    MagicHealPlus
+    //MagicHealPlus,
+    MagicHealSpirit
   ]
   allMagic.forEach((m)=>{
     console.log(m);
     let maxDps = m.damage / m.cooldown;
     let trueDps = m.damage / Math.max(m.cooldown, m.cost);
-    console.log("Max DPS: "+maxDps);
-    console.log("Average DPS: "+trueDps);
+    console.log("Max DPF: "+maxDps);
+    console.log("Average DPF: "+trueDps);
     let manaDrain = (m.cost - m.cooldown) / m.cooldown;
     console.log("Mana drain per frame: "+manaDrain);
     if (m.pierce>0) {
       maxDps*=m.pierce+1;
       trueDps*=m.pierce+1;
-      console.log("Piercing max DPS: "+maxDps);
-      console.log("Piercing average DPS: "+trueDps);
+      console.log("Piercing max DPF: "+maxDps);
+      console.log("Piercing average DPF: "+trueDps);
     }
     console.log("");
   });
@@ -43,10 +45,10 @@
     let trueHps = m.healthHeal / Math.max(m.cooldown, m.cost);
     let maxMps = m.manaHeal / m.cooldown;
     let trueMps = m.manaHeal / Math.max(m.cooldown, m.cost);
-    console.log("Max HPS: "+maxHps);
-    console.log("Average HPS: "+trueHps);
-    console.log("Max MPS: "+maxMps);
-    console.log("Average MPS: "+trueMps);
+    console.log("Max HPF: "+maxHps);
+    console.log("Average HPF: "+trueHps);
+    console.log("Max MPF: "+maxMps);
+    console.log("Average MPF: "+trueMps);
     let manaDrain = (m.cost - m.cooldown) / m.cooldown;
     console.log("Mana drain per frame: "+manaDrain);
     if (m.pierce>0) {
@@ -54,10 +56,10 @@
       trueHps*=m.pierce+1;
       maxMps*=m.pierce+1;
       trueMps*=m.pierce+1;
-      console.log("Piercing max HPS: "+maxHps);
-      console.log("Piercing average HPS: "+trueHps);
-      console.log("Piercing max MPS: "+maxMps);
-      console.log("Piercing average MPS: "+trueMps);
+      console.log("Piercing max HPF: "+maxHps);
+      console.log("Piercing average HPF: "+trueHps);
+      console.log("Piercing max MPF: "+maxMps);
+      console.log("Piercing average MPF: "+trueMps);
     }
     console.log("");
   });
@@ -73,16 +75,7 @@ Player.getSpell = function (id) { //TEMP for debugging
     id = parseInt(prompt("Please input spell id.", Math.floor(Math.random()*8)));
   }
   //id = id || prompt("Please input spell id."); //does not work because 0 is falsy
-  switch (id) {
-    case 0: default: return Magic;
-    case 1: return MagicPiercingOrb;
-    case 2: return MagicBigOrb;
-    case 3: return MagicBreath;
-    case 4: return MagicHoming;
-    case 5: return MagicFollow;
-    case 6: return MagicHealing;
-    case 7: return MagicHealPlus;
-  }
+  return Wizard.getSpell(id);
 }
 
 
