@@ -398,7 +398,7 @@ class MagicFollow extends Magic {
         this.movement.add(this.target.vectorCopy().subtract(this).normalize().scale(this.constructor.acceleration));
 
         
-        if (this.movement.magnitude()>this.constructor.maxSpeed) {
+        if (this.movement.sqMagnitude()>this.constructor.maxSpeed * this.constructor.maxSpeed) {
           this.movement.normalize().scale(this.constructor.maxSpeed);
         }
       }
@@ -503,7 +503,7 @@ class MagicHealPlus extends MagicHealing { //this is also based on MagicFollow b
         this.target = null;
       } else {
         this.movement.add(this.target.vectorCopy().subtract(this).normalize().scale(this.constructor.acceleration));
-        if (this.movement.magnitude()>this.constructor.maxSpeed) {
+        if (this.movement.sqMagnitude()>this.constructor.maxSpeed * this.constructor.maxSpeed) {
           this.movement.normalize().scale(this.constructor.maxSpeed);
         }
       }
@@ -524,11 +524,11 @@ class MagicHealPlus extends MagicHealing { //this is also based on MagicFollow b
 }
 
 class MagicLifeSteal extends MagicHoming {
-  static cost = 12;
-  static cooldown = 6;
-  static damage = 3;
+  static cost = 10;
+  static cooldown = 5;
+  static damage = 1;
   static knockback = 0;
-  static speed = 8;
+  static speed = 7;
   static iFrames = 4;
 
   static name = "Vampire";
@@ -537,7 +537,7 @@ class MagicLifeSteal extends MagicHoming {
   static lifeSpan = 120;
 
   static targetRadius = 128;
-  static homingSpeed = Math.PI/64;
+  static homingSpeed = Math.PI/32;
 
   /**
    * @param {WizardGameLevel} level
@@ -559,8 +559,8 @@ class MagicLifeSteal extends MagicHoming {
   }
 }
 class MagicHealSpirit extends MagicHealing {
-  static cost = 12;
-  static cooldown = 6;
+  static cost = 10;
+  static cooldown = 5;
   static damage = 0;
   static knockback = 0;
   static speed = 8;
@@ -569,11 +569,11 @@ class MagicHealSpirit extends MagicHealing {
   static name = "Vampire Healing";
 
   static radius = 12;
-  static lifeSpan = 300;
+  static lifeSpan = 90;
 
-  static targetRadius = 1024;
-  static acceleration = 0.5;
-  static maxSpeed = 8;
+  static targetRadius = 512;
+  static acceleration = 2;
+  static maxSpeed = 12;
 
   /** Damage healed when a friendly wizard is hit by this spell
    * @type {number} */
@@ -593,14 +593,19 @@ class MagicHealSpirit extends MagicHealing {
 
   move(level) {
     if (!this.target) {
+      this.lifeSpan-=5;
       this.findTarget(level);
     } else {
       if (!this.target.inWorld || this.target.colour!==this.colour || 
         (this.target.health>=this.target.maxHealth && this.target.mana>=this.target.maxMana)) {
         this.target = null;
       } else {
-        this.movement.add(this.target.vectorCopy().subtract(this).normalize().scale(this.constructor.acceleration));
-        if (this.movement.magnitude()>this.constructor.maxSpeed) {
+        let scale = this.constructor.acceleration;
+        if (this.sqDistance(this.target)<=1024) {
+          scale = this.constructor.maxSpeed * 2;
+        }
+        this.movement.add(this.target.vectorCopy().subtract(this).normalize().scale(scale));
+        if (this.movement.sqMagnitude()>this.constructor.maxSpeed * this.constructor.maxSpeed) {
           this.movement.normalize().scale(this.constructor.maxSpeed);
         }
       }

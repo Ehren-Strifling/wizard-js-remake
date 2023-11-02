@@ -8,6 +8,7 @@ class WizardGameLevel {
 
     /**@type {Camera2d} */
     this.camera = new Camera2d();
+    this.getInput().mouseManager.camera = this.camera;
 
     /**@type {Wizard[]} */
     this.wizards = [];
@@ -30,7 +31,7 @@ class WizardGameLevel {
 
   /**
    * Minimizes the damage done if I ever have to change the instance structure
-   * @returns {Input}
+   * @returns {InputV2}
    */
   getInput() {
     return this.instance.input;
@@ -131,9 +132,9 @@ class WizardGameLevel {
     }
     if (this.cameraTarget && !this.cameraTarget.inWorld) {
       if (this.wizards.length>0) {
-        this.cameraTarget = this.wizards[0];
+      this.cameraTarget = this.wizards[0];
       } else {
-        this.cameraTarget = null;
+      this.cameraTarget = null;
       }
     }
   }

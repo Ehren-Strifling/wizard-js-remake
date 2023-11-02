@@ -9,8 +9,10 @@ class WizardGameInstance extends GameInstance {
     this.context2d = this.canvas.getContext("2d");
     /**@type {WizardGameLevel} */
     this.level = null;
-    /**@type {Input} */
-    this.input = new Input(canvas);
+    /**@type {InputV2} */
+    this.input = new InputV2();
+    this.input.keyboardManager = new WizardJSKeyboardManager();
+    this.input.mouseManager = new WizardJSMouseManager();
 
     this.paused = false;
 
@@ -24,17 +26,29 @@ class WizardGameInstance extends GameInstance {
     //canvas.height = canvas.offsetHeight;
     this.canvas.width = 600;
     this.canvas.height = 400;
-  
+
     this.level = new EndlessLevel(this);
     this.level.camera.setWidth(this.canvas.width);
     this.level.camera.setHeight(this.canvas.height);
   
+    this.level.camera.setCanvasWidth(this.canvas.offsetWidth);
+    this.level.camera.setCanvasHeight(this.canvas.offsetHeight);
+
+    window.addEventListener('resize', e=>{
+      if (this.level) {
+        this.level.camera.setCanvasWidth(this.canvas.offsetWidth);
+        this.level.camera.setCanvasHeight(this.canvas.offsetHeight);
+      }
+    });
+
+    this.input.addListeners(this.canvas);
+
     this.nextSecond = Date.now()+1000;
   };
 
   act() {
     if (this.level!=null) {
-      if (this.input.key(27)===Input.PRESSED) {
+      if (this.input.controllers.some(c=>c.buttonStart===InputV2Controller.PRESSED)) {
         this.paused = !this.paused;
       }
 
@@ -87,4 +101,4 @@ function onLoad(e) {
   window.removeEventListener("load", onLoad);
 }
 
-window.addEventListener("load", onLoad); 
+window.addEventListener("load", onLoad);

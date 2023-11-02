@@ -418,6 +418,9 @@ class Wizard extends Entity {
    * @returns {Magic.constructor}
    */
   static getSpell(id) {
+    if (id===0) {
+      return Magic;
+    }
     id = id || Math.floor(Math.random()*8);
     switch (id) {
       case 0: default: return Magic;
@@ -445,6 +448,8 @@ class Wizard extends Entity {
 class Player extends Wizard {
   constructor(level, x,y) {
     super(level, x,y, COLOURS.BLUE);
+
+    this.playerID = 0;
   }
   /**
    * Player control
@@ -454,18 +459,10 @@ class Player extends Wizard {
     //control based on WASD or ARROW keys.
     super.control(level);
     this.shooting=false;
-    if (level.getInput().key(65)>=Input.HELD||level.getInput().key(37)>=Input.HELD) {
-      this.acceleration.x-=this.movespeed;
-    } 
-    if (level.getInput().key(68)>=Input.HELD||level.getInput().key(39)>=Input.HELD) {
-      this.acceleration.x+=this.movespeed;
-    } 
-    if (level.getInput().key(87)>=Input.HELD||level.getInput().key(38)>=Input.HELD) {
-      this.acceleration.y-=this.movespeed;
-    } 
-    if (level.getInput().key(83)>=Input.HELD||level.getInput().key(40)>=Input.HELD) {
-      this.acceleration.y+=this.movespeed;
-    }
+    /** @type {InputV2Controller} */
+    let controller = level.getInput().controllers[this.playerID];
+
+    this.acceleration.add(controller.axisLeft);
     //Limit movement speed since diagonal movement should not move faster than orthogonally
     if (this.acceleration.x!=0||this.acceleration.y!=0) {
       this.acceleration.normalize().scale(this.movespeed);
@@ -475,23 +472,19 @@ class Player extends Wizard {
       this.stopMoving();
     }
 
-    //z key, remove target
-    if (level.getInput().key(90)===Input.PRESSED || level.getInput().mouseClicked[2]===Input.PRESSED) {
+    //z key and rightmouse, remove target
+    //if (level.getInput().key(90)===Input.PRESSED || level.getInput().mouseClicked[2]===Input.PRESSED) {
+    if (controller.buttonLB===InputV2Controller.PRESSED) {
       this.target = null;
     }
-    //x key, set target to nearest to mouse
-    if (level.getInput().key(88)===Input.PRESSED || level.getInput().mouseClicked[0]===Input.PRESSED) {
-      if (level.getInput().mouseX && level.getInput().mouseY) {
-        let v = new Vector2(
-          level.camera.PtWX(level.getInput().mouseX*level.getCanvas().width/level.getCanvas().offsetWidth),
-          level.camera.PtWY(level.getInput().mouseY*level.getCanvas().height/level.getCanvas().offsetHeight)
-        );
-        this.target = level.getNearestWizard(v,256,this);
-      }
-      
+    //x key and leftmouse, set target to nearest to mouse
+    if (controller.buttonRB===InputV2Controller.PRESSED) {
+      let v = controller.axisRight.vectorCopy().add(this);
+      this.target = level.getNearestWizard(v,256,this);
     }
     
-    if (this.target && !(level.getInput().key(16)>=Input.HELD)) { //why does bitwise inversion have priority here?
+    //shift key
+    if (this.target && controller.buttonLS<InputV2Controller.HELD) { //why does bitwise inversion have priority here?
       if (!this.target.inWorld) {
         this.target = level.getNearestEnemyWizard(this, this.colour, 512);
       } else {
@@ -499,19 +492,15 @@ class Player extends Wizard {
       }
     } else {
       //Face towards the mouse.
-      if (level.getInput().mouseX && level.getInput().mouseY) {
-        let v = new Vector2(
-          level.camera.PtWX(level.getInput().mouseX*level.getCanvas().width/level.getCanvas().offsetWidth),
-          level.camera.PtWY(level.getInput().mouseY*level.getCanvas().height/level.getCanvas().offsetHeight)
-        ).subtract(this);
-        if (v.x||v.y) {
-          this.rotation = v.getAngle();
-          this.shootingAngle = this.rotation;
-        }
+      let v = controller.axisRight.vectorCopy();
+      if (v.x||v.y) {
+        this.rotation = v.getAngle();
+        this.shootingAngle = this.rotation;
       }
     }
 
-    if (level.getInput().key(32)>=Input.HELD || level.getInput().mouseClicked[0]>=Input.HELD) {
+    //space and left-mouse
+    if (controller.buttonRT) {
       this.shooting=true;
     }
   }

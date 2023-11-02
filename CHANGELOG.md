@@ -10,6 +10,8 @@ Changed DPS to DPF in the debug script
 Removed Heal Plus spell
 
 ## Code Changes
+Reworked controls to allow for controller support in the future
+
 
 # Version 1.2-alpha
 

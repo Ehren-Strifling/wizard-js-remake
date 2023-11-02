@@ -84,7 +84,7 @@ Player.prototype.control2 = Player.prototype.control;
 Player.prototype.control = function (level) {
   this.control2(level);
   for (let i=0;i<8;++i) {
-    if (level.getInput().key(96+i)) {
+    if (level.getInput().keyboardManager.key(96+i)===InputV2Controller.PRESSED) {
       this.spell = this.constructor.getSpell(i);
     }
   }
