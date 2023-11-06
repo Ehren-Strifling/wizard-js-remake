@@ -19,7 +19,7 @@ Reworked code to use game-instance from xander-js-3
 Remake of my Greenfoot wizard game.
 Link to the original Java version: https://www.greenfoot.org/scenarios/27474
 
-You can play the most recent release of the game without downloading anything by [visiting this website](https://ehren-strifling.github.io/index.html).
+You can play the most recent release of the game without downloading anything by [visiting this website](https://ehren-strifling.github.io/wizard-js-remake/).
 
 The main file is index.html.
 Running this requires you to download the "xander-js-3" submodule.   
