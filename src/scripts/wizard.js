@@ -194,10 +194,10 @@ class Wizard extends Entity {
   castMagic(level) {
     //TEMP. Needs proper spellcasting class
     if (this.cooldown <=0 && this.shooting && this.mana>=this.spell.cost) {
+      this.mana-=this.spell.cost;
+      this.cooldown = this.spell.cooldown;
       let magic = new this.spell(level, this);
       level.addMagic(magic);
-      this.mana-=magic.constructor.cost;
-      this.cooldown = magic.constructor.cooldown;
     }
     
   }

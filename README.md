@@ -55,7 +55,7 @@ You can also use the numberpad numbers to change your spell while the game is st
 4. Homing magic. Shoots magic that will home in on nearby targets. At the cost of dealing slightly less damage.
 5. Follow magic (name still not decided). Shoots magic that flies towards enemies. Has a high mana cost.
 6. Healing magic. Restores the health and mana of any allies it hits. But costs slightly more to cast.
-7. Homing healing magic. Will home in on enemies or allies. Slightly restores the health of allies. Has a pitiful damage output.
+7. Lifesteal. Deals low damage but heals you when it hits enemies.
 
 ## Mechanics
 ### Mana

@@ -226,6 +226,19 @@ class MagicBreath extends Magic {
   /**
    * 
    * @param {WizardGameLevel} level 
+   * @param {Wizard} wizard 
+   */
+  constructor(level, wizard) {
+    super(level, wizard);
+
+    if (wizard.mana<10) { //TEMP, forced cooldown to prevent ai from being annoying with it
+      wizard.cooldown +=50;
+    }
+  }
+
+  /**
+   * 
+   * @param {WizardGameLevel} level 
    */
   move(level) {
     super.move(level);
@@ -369,7 +382,7 @@ class MagicFollow extends Magic {
   static lifeSpan = 240;
 
   static targetRadius = 512;
-  static acceleration = 0.1;
+  static acceleration = 0.16;
   static maxSpeed = 8;
 
   static name = "Dragon Spirit";
