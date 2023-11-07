@@ -1,11 +1,8 @@
 "use strict";
 
-class WizardJSKeyboardManager extends InputV2KeyboardManager {
+class WizardJSKeyboardManager extends DefaultKeyboardManager {
   constructor() {
     super();
-    this.keyMap = [223];//[223]; //keys pressed or held. 3 = pressed, 2 = held, 1 = released, 0 = none
-    this.keyMap.fill(0);
-
     this.directionMap = [4]; //right, top, left, down
     this.directionMap.fill(0);
   }
@@ -46,10 +43,7 @@ class WizardJSKeyboardManager extends InputV2KeyboardManager {
         controller.buttonRT = 3;
       break;
     }
-    if (e.keyCode) {
-      this.keyMap[e.keyCode] = 3;
-    }
-    e.preventDefault(); //prevents spacebar from scrolling the screen and other weird things.
+    super.onKeyDown(e, controller);
   }
   /**
    * 
@@ -88,9 +82,7 @@ class WizardJSKeyboardManager extends InputV2KeyboardManager {
         controller.buttonRT = 1;
       break;
     }
-    if (e.keyCode) {
-      this.keyMap[e.keyCode] = 1;
-    }
+    super.onKeyUp(e, controller);
   }
 
   /** Makes it so that keyboard controls aren't complete junk
@@ -111,41 +103,23 @@ class WizardJSKeyboardManager extends InputV2KeyboardManager {
       controller.axisLeft.y += 1;
     }
   }
-
-  key(keyCode) {
-    return this.keyMap[keyCode];
-  }
   reset() {
-    for (let i=0;i<this.keyMap.length;++i) {
-      this.keyMap[i]&=2;
-    }
+    super.reset();
     for (let i=0;i<this.directionMap.length;++i) {
       this.directionMap[i]&=2;
     }
   }
 }
-class WizardJSMouseManager extends InputV2MouseManager {
+class WizardJSMouseManager extends DefaultMouseManager {
   constructor() {
     super();
-
-    this.camera = new Camera2d;
-
-    this.mousePos = new Vector2();
-    this.mouseDrag = new Vector2();
-    this.mouseButtons = [5];
-    this.mouseButtons.fill(0);
-    this.mouseWheel = [3];
-    this.mouseWheel.fill(0);
   }
   /**
    * @param {Event} e 
    * @param {InputV2Controller} controller 
    */
   onMouseMove(e, controller) {
-    this.mouseDrag.x += this.mousePos.x - e.offsetX;
-    this.mouseDrag.y += this.mousePos.y - e.offsetY;
-    this.mousePos.x = e.offsetX;
-    this.mousePos.y = e.offsetY;
+    super.onMouseMove(e, controller);
 
     let v = new Vector2(
       this.camera.PtWX(this.mousePos.x * this.camera.canvasScaleX),
@@ -167,7 +141,7 @@ class WizardJSMouseManager extends InputV2MouseManager {
       controller.buttonLB = 3;
       break;
     }
-    this.mouseButtons[e.button] = 3;
+    super.onMouseDown(e, controller);
   }
   /**
    * @param {Event} e 
@@ -183,29 +157,6 @@ class WizardJSMouseManager extends InputV2MouseManager {
       controller.buttonLB = 1;
       break;
     }
-    this.mouseButtons[e.button] = 1;
+    super.onMouseUp(e, controller);
   }
-  /**
-   * @param {Event} e 
-   * @param {InputV2Controller} controller 
-   */
-  onMouseWheel(e, controller) {}
-
-  getMousePos() {
-    return this.mousePos;
-  }
-  getMouseDrag() {
-    return this.mouseDrag;
-  }
-  getMouseButtons() {
-    return this.mouseButtons;
-  }
-  getMouseWheel() {
-    return this.mouseWheel;
-  }
-  reset() {
-    for (let i=0;i<this.mouseButtons.length;++i) {
-      this.mouseButtons[i]&=2;
-    }
-  };
 }
