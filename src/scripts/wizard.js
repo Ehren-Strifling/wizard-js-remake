@@ -505,9 +505,28 @@ class Player extends Wizard {
     }
   }
 
+  /** @param {WizardGameLevel} level */
   drawHealthbar(level) {
     super.drawHealthbar(level);
     super.drawManabar(level);
+
+    let controller = level.getInput().controllers[this.playerID];
+    if (controller.axisRight.sqMagnitude()>2500) {
+      let ctx = level.getContext();
+      let cursorPos = controller.axisRight.vectorCopy().add(this);
+      level.camera.vWtP(cursorPos);
+
+      ctx.beginPath();
+      ctx.fillStyle = "#0000FF20";
+      ctx.arc( //inlined code because I don't think browsers do that. Some scripts might call draw code every frame so decent performance is important.
+        cursorPos.x,
+        cursorPos.y,
+        8,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+    }
   }
 
 

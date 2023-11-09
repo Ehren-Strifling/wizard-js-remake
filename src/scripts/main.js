@@ -13,6 +13,7 @@ class WizardGameInstance extends GameInstance {
     this.input = new InputV2();
     this.input.keyboardManager = new WizardJSKeyboardManager();
     this.input.mouseManager = new WizardJSMouseManager();
+    this.input.gamepadManager = new WizardJSGamepadManager();
 
     this.paused = false;
 

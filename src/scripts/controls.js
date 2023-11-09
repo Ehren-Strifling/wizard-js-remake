@@ -166,3 +166,20 @@ class WizardJSMouseManager extends DefaultMouseManager {
     super.onMouseUp(e, controller);
   }
 }
+
+class WizardJSGamepadManager extends DefaultGamepadManager {
+  /**
+   * @param {Gamepad} gamepad 
+   * @param {InputV2} controller 
+   */
+  update(gamepad, controller) {
+    if (gamepad && gamepad.timestamp > this.lastUpdated) {
+      super.update(gamepad, controller);
+      controller.axisRight.scale(150);
+    } else {
+      super.update(gamepad, controller);
+    }
+    
+    
+  }
+}
