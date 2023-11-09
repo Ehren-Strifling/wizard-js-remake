@@ -42,6 +42,9 @@ class WizardJSKeyboardManager extends DefaultKeyboardManager {
       case 'Space':
         controller.buttonRT = 3;
       break;
+      case 'ShiftLeft':
+        controller.buttonLS = 3;
+      break;
     }
     super.onKeyDown(e, controller);
   }
@@ -80,6 +83,9 @@ class WizardJSKeyboardManager extends DefaultKeyboardManager {
       break;
       case 'Space':
         controller.buttonRT = 1;
+      break;
+      case 'ShiftLeft':
+        controller.buttonLS = 1;
       break;
     }
     super.onKeyUp(e, controller);
