@@ -47,6 +47,7 @@ class WizardGameInstance extends GameInstance {
   };
 
   act() {
+    this.input.act();
     if (this.level!=null) {
       if (this.input.controllers.some(c=>c.buttonStart===InputV2Controller.PRESSED)) {
         this.paused = !this.paused;

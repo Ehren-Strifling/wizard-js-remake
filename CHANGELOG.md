@@ -6,7 +6,8 @@ Added Vampire Spell. Steals life from hit enemies.
 ## Gameplay Changes
 Changed DPS to DPF in the debug script
 Added a longer cooldown after using magic breath at low mana to prevent spamming.
-increased pursuit speed of the follow spell. 
+Increased pursuit speed of the follow spell. 
+Added partial controller support.
 
 ## Removed
 Removed Heal Plus spell
